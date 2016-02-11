@@ -351,6 +351,7 @@ Dalam snippet form di atas, ada beberapa directive baru, ```ng-submit``` pada el
 
 Selanjutnya, buat controller baru ```registerCtrl``` dalam module ```tutorialApp```
 ```js
+		// ... Other custom scripts omitted.
 		app.controller('registerCtrl', function($scope, $http, $log) {
 			$scope.person = {};
 			
@@ -366,7 +367,7 @@ Selanjutnya, buat controller baru ```registerCtrl``` dalam module ```tutorialApp
 				var errorHandler = function(errors) {
 					$log.error('Errors :\n' + angular.toJson(errors, true));
 				};
-				$http(request).then();
+				$http(request).then(successHandler, errorHandler);
 			};
 		});
 ```
