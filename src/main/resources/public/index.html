@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sample AngularJS</title>
+</head>
+<body ng-app="tutorialApp">
+	<!-- Start: Show list of person -->
+	<div ng-controller="listCtrl">
+		<table border="1">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Gender</th>
+					<th>Date of Birth</th>
+					<th>Email</th>
+					<th>Phone</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in items">
+					<td>{{item.name}}</td>
+					<td>{{item.gender}}</td>
+					<td>{{item.dateOfBirth}}</td>
+					<td>{{item.email}}</td>
+					<td>{{item.phone}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- Start: Show list of person -->
+	<script type="text/javascript" src="/scripts/vendor/angular.min.js"></script>
+	<script type="text/javascript">
+		// our custom scripts.
+		'use strict';
+		angular.module('tutorialApp', []).controller('listCtrl',
+				function($scope, $http, $log) {
+					$scope.items = [];
+
+					var request = {
+						url : '/people',
+						method : 'GET'
+					};
+					var successHandler = function(response) {
+						// Tampilin struktur dari 'response' di console browser.
+						$log.debug(angular.toJson(response, true));
+						$scope.items = response.data.content;
+					};
+					var errorHandler = function(errors) {
+						// Tampilin struktur dari 'errors' di console browser.
+						$log.error(angular.toJson(errors, true));
+					};
+
+					// Make http request for member list.
+					$http(request).then(successHandler, errorHandler);
+				});
+	</script>
+</body>
+</html>
