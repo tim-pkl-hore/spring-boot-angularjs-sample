@@ -187,7 +187,7 @@ public class PersonController {
 
 ## Front End AngularJS
 
-### List People
+### Setup Front End
 Pertama buat file ```index.html``` dalam directory ```src/main/resources/public```. Berdasarkan perjanjian, seluruh content dalam directory tersebut dapat direquest langsung dari client secara statis (tidak perlu pakai controller). Maksudnya, pada saat akses ```http://localhost:9999/index.html``` maka otomatis ```index.html``` dalam directory tersebut yg kirim sebagai response.
 
 > Untuk lebih jelas tentang static content ini, silahkan baca [tutorial ini](https://spring.io/blog/2013/12/19/serving-static-web-content-with-spring-boot).
@@ -217,8 +217,30 @@ Kemudian edit file ```index.html``` untuk manampilkan list dari person.
 <title>Sample AngularJS</title>
 </head>
 <body ng-app="tutorialApp">
+	
+	<script type="text/javascript" src="/scripts/vendor/angular.min.js"></script>
+	<script type="text/javascript">
+		// our custom scripts.
+		'use strict';
+		
+		var app = angular.module('tutorialApp', []);
+	</script>
+</body>
+</html>
+```
+
+Pada element ```<body>``` ditambahkan attribute ```ng-app```. Dalam angularjs, ```ng-app``` ini disebut ```directive```. Directive tujuannya untuk 'memperkaya' html. Sementara, ```ng-app``` sendiri maksudnya menandakan bahwa seluruh element DOM dalam ```<body>``` ada dalam skup module ```tutorialApp```. Sebenarnya, kita bisa mendefinisikan ```ng-app``` pada element ```<http>```, atau element lain sesuai keperluan.
+
+Kemudian perhatikan custom javascript, kita mendefinisikan modul baru ```tutorialApp``` dengan sintaks
+```js
+var app = angular.module('tutorialApp', []);
+```
+
+### List Person
+Tambah snippet berikut ini ke dalam element ```<body>``` file ```index.html```.
 	<!-- Start: Show list of person -->
 	<div ng-controller="listCtrl">
+		<h2>List People</h2>
 		<table border="1">
 			<thead>
 				<tr>
@@ -241,57 +263,42 @@ Kemudian edit file ```index.html``` untuk manampilkan list dari person.
 		</table>
 	</div>
 	<!-- End: Show list of person -->
-	<!-- Start: Show register person form -->
-	
-	<!-- End: Show register person form -->
-	<div ng-controller="listCtrl">
-	<script type="text/javascript" src="/scripts/vendor/angular.min.js"></script>
-	<script type="text/javascript">
-		// our custom scripts.
-		'use strict';
-		
-		var app = angular.module('tutorialApp', []);
-		
+
+Perhatikan element ```<div>``` pada snippet di atas, ada directive ```ng-controller```. Maksudnya, element ```<div>``` tersebut (dan seluruh child DOM element di dalamnya) akan di binding ke controller tersebut. Directive berikutnya adalah ```ng-repeat```, fungsinya untuk itrasi array atau object, dalam contoh di atas iterasi scope object bernama ```items```
+
+Dalam block javascript, tambahkan snippet di bawah ini (seletah module)
+
+```js
 		app.controller('listCtrl', function($scope, $http, $log) {
-				$scope.items = [];
+			$scope.items = [];
 
-				var request = {
-					url : '/people',
-					method : 'GET'
-				};
-				var successHandler = function(response) {
-					// Tampilin struktur dari 'response' di console browser.
-					$log.debug(angular.toJson(response, true));
-					$scope.items = response.data.content;
-				};
-				var errorHandler = function(errors) {
-					// Tampilin struktur dari 'errors' di console browser.
-					$log.error(angular.toJson(errors, true));
-				};
+			var request = {
+				url : '/people',
+				method : 'GET'
+			};
+			var successHandler = function(response) {
+				// Tampilin struktur dari 'response' di console browser.
+				$log.debug("Response data dari server :\n" + angular.toJson(response.data, true));
+				$scope.items = response.data.content;
+			};
+			var errorHandler = function(errors) {
+				// Tampilin struktur dari 'errors' di console browser.
+				$log.error(angular.toJson(errors, true));
+			};
 
-				// Make http request for member list.
-				$http(request).then(successHandler, errorHandler);
-			});
-	</script>
-</body>
-</html>
+			// Make http request for member list.
+			$http(request).then(successHandler, errorHandler);
+		});
 ```
 
-Pada element ```<body>``` ditambahkan attribute ```ng-app```. Dalam angularjs, ```ng-app``` ini disebut ```directive```. Directive tujuannya untuk 'memperkaya' html. Sementara, ```ng-app``` sendiri maksudnya menjelaskan bahwa seluruh element DOM di bawah module ada dalam skup module ```tutorialApp```. Sebenarnya, kita bisa mendefinisikan ```ng-app``` pada element ```<http>```, atau element lain sesuai keperluan.
+>Cara mendefinisikan controller dalam module ```tutorialApp``` adalah seperti berikut
+>```js
+>app.controller('namaController', controllerFunction);
+>```
 
-Kemudia perhatikan custom javascript, kite mendefinisikan modul baru ```tutorialApp``` dengan sintaks
-```js
-var app = angular.module('tutorialApp', []);
-```
 
-Kemudian, perhatikan element ```<div>```, ditambahkan pula directive ```ng-controller```. Maksudnya, element DOM ini (dan seluruh child DOM element di dalamnya) akan di binding ke controller tersebut.
 
-Cara mendefinisikan controller dalam module ```tutorialApp``` adalah seperti berikut
-```js
-app.controller('listCtrl', listControllerFunction);
-```
-
-Perlu dicatat, ```$scope```, ```$http``` dan ```$log``` adalah service bawaan angular. Dalam contoh ini, parameter ```$scope```, ```$http``` dan ```$log``` dari fungsi controller akan auto-inject atau autowired berdasarkan namanya, jadi nulis nama service itu tidak boleh salah.
+Perlu dicatat, ```$scope```, ```$http``` dan ```$log``` adalah service bawaan angular. Dalam contoh ini, parameter ```$scope```, ```$http``` dan ```$log``` dari controller akan di-auto-inject atau autowired berdasarkan namanya, jadi penulisan nama service itu tidak boleh salah.
 
 ### Register Person
 
