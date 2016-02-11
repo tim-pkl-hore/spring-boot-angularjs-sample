@@ -238,6 +238,7 @@ var app = angular.module('tutorialApp', []);
 
 ### List Person
 Tambah snippet berikut ini ke dalam element ```<body>``` file ```index.html```.
+```html
 	<!-- Start: Show list of person -->
 	<div ng-controller="listCtrl">
 		<h2>List People</h2>
@@ -263,6 +264,7 @@ Tambah snippet berikut ini ke dalam element ```<body>``` file ```index.html```.
 		</table>
 	</div>
 	<!-- End: Show list of person -->
+```
 
 Perhatikan element ```<div>``` pada snippet di atas, ada directive ```ng-controller```. Maksudnya, element ```<div>``` tersebut (dan seluruh child DOM element di dalamnya) akan di binding ke controller tersebut. Directive berikutnya adalah ```ng-repeat```, fungsinya untuk itrasi array atau object, dalam contoh di atas iterasi scope object bernama ```items```
 
