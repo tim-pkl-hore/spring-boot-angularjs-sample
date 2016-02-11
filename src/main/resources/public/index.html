@@ -28,32 +28,38 @@
 			</tbody>
 		</table>
 	</div>
-	<!-- Start: Show list of person -->
+	<!-- End: Show list of person -->
+	<!-- Start: Show register person form -->
+	
+	<!-- End: Show register person form -->
+	<div ng-controller="listCtrl">
 	<script type="text/javascript" src="/scripts/vendor/angular.min.js"></script>
 	<script type="text/javascript">
 		// our custom scripts.
 		'use strict';
-		angular.module('tutorialApp', []).controller('listCtrl',
-				function($scope, $http, $log) {
-					$scope.items = [];
+		
+		var app = angular.module('tutorialApp', []);
+		
+		app.controller('listCtrl', function($scope, $http, $log) {
+				$scope.items = [];
 
-					var request = {
-						url : '/people',
-						method : 'GET'
-					};
-					var successHandler = function(response) {
-						// Tampilin struktur dari 'response' di console browser.
-						$log.debug(angular.toJson(response, true));
-						$scope.items = response.data.content;
-					};
-					var errorHandler = function(errors) {
-						// Tampilin struktur dari 'errors' di console browser.
-						$log.error(angular.toJson(errors, true));
-					};
+				var request = {
+					url : '/people',
+					method : 'GET'
+				};
+				var successHandler = function(response) {
+					// Tampilin struktur dari 'response' di console browser.
+					$log.debug(angular.toJson(response, true));
+					$scope.items = response.data.content;
+				};
+				var errorHandler = function(errors) {
+					// Tampilin struktur dari 'errors' di console browser.
+					$log.error(angular.toJson(errors, true));
+				};
 
-					// Make http request for member list.
-					$http(request).then(successHandler, errorHandler);
-				});
+				// Make http request for member list.
+				$http(request).then(successHandler, errorHandler);
+			});
 	</script>
 </body>
 </html>

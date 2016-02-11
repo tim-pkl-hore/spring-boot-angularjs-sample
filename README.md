@@ -187,6 +187,7 @@ public class PersonController {
 
 ## Front End AngularJS
 
+### List People
 Pertama buat file ```index.html``` dalam directory ```src/main/resources/public```. Berdasarkan perjanjian, seluruh content dalam directory tersebut dapat direquest langsung dari client secara statis (tidak perlu pakai controller). Maksudnya, pada saat akses ```http://localhost:9999/index.html``` maka otomatis ```index.html``` dalam directory tersebut yg kirim sebagai response.
 
 > Untuk lebih jelas tentang static content ini, silahkan baca [tutorial ini](https://spring.io/blog/2013/12/19/serving-static-web-content-with-spring-boot).
@@ -239,33 +240,57 @@ Kemudian edit file ```index.html``` untuk manampilkan list dari person.
 			</tbody>
 		</table>
 	</div>
-	<!-- Start: Show list of person -->
+	<!-- End: Show list of person -->
+	<!-- Start: Show register person form -->
+	
+	<!-- End: Show register person form -->
+	<div ng-controller="listCtrl">
 	<script type="text/javascript" src="/scripts/vendor/angular.min.js"></script>
 	<script type="text/javascript">
 		// our custom scripts.
 		'use strict';
-		angular.module('tutorialApp', []).controller('listCtrl',
-				function($scope, $http, $log) {
-					$scope.items = [];
+		
+		var app = angular.module('tutorialApp', []);
+		
+		app.controller('listCtrl', function($scope, $http, $log) {
+				$scope.items = [];
 
-					var request = {
-						url : '/people',
-						method : 'GET'
-					};
-					var successHandler = function(response) {
-						// Tampilin struktur dari 'response' di console browser.
-						$log.debug(angular.toJson(response, true));
-						$scope.items = response.data.content;
-					};
-					var errorHandler = function(errors) {
-						// Tampilin struktur dari 'errors' di console browser.
-						$log.error(angular.toJson(errors, true));
-					};
+				var request = {
+					url : '/people',
+					method : 'GET'
+				};
+				var successHandler = function(response) {
+					// Tampilin struktur dari 'response' di console browser.
+					$log.debug(angular.toJson(response, true));
+					$scope.items = response.data.content;
+				};
+				var errorHandler = function(errors) {
+					// Tampilin struktur dari 'errors' di console browser.
+					$log.error(angular.toJson(errors, true));
+				};
 
-					// Make http request for member list.
-					$http(request).then(successHandler, errorHandler);
-				});
+				// Make http request for member list.
+				$http(request).then(successHandler, errorHandler);
+			});
 	</script>
 </body>
 </html>
 ```
+
+Pada element ```<body>``` ditambahkan attribute ```ng-app```. Dalam angularjs, ```ng-app``` ini disebut ```directive```. Directive tujuannya untuk 'memperkaya' html. Sementara, ```ng-app``` sendiri maksudnya menjelaskan bahwa seluruh element DOM di bawah module ada dalam skup module ```tutorialApp```. Sebenarnya, kita bisa mendefinisikan ```ng-app``` pada element ```<http>```, atau element lain sesuai keperluan.
+
+Kemudia perhatikan custom javascript, kite mendefinisikan modul baru ```tutorialApp``` dengan sintaks
+```js
+var app = angular.module('tutorialApp', []);
+```
+
+Kemudian, perhatikan element ```<div>```, ditambahkan pula directive ```ng-controller```. Maksudnya, element DOM ini (dan seluruh child DOM element di dalamnya) akan di binding ke controller tersebut.
+
+Cara mendefinisikan controller dalam module ```tutorialApp``` adalah seperti berikut
+```js
+app.controller('listCtrl', listControllerFunction);
+```
+
+Perlu dicatat, ```$scope```, ```$http``` dan ```$log``` adalah service bawaan angular. Dalam contoh ini, parameter ```$scope```, ```$http``` dan ```$log``` dari fungsi controller akan auto-inject atau autowired berdasarkan namanya, jadi nulis nama service itu tidak boleh salah.
+
+### Register Person
