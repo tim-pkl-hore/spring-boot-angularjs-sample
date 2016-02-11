@@ -103,7 +103,7 @@
 				var errorHandler = function(errors) {
 					$log.error('Errors :\n' + angular.toJson(errors, true));
 				};
-				$http(request).then();
+				$http(request).then(successHandler, errorHandler);
 			};
 		});
 	</script>
