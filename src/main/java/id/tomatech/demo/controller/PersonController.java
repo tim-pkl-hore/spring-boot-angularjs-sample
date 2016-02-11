@@ -1,5 +1,7 @@
 package id.tomatech.demo.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ import id.tomatech.demo.repository.PersonRepository;
 @RestController
 @RequestMapping(value="/people")
 public class PersonController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
+	
 	@Autowired
 	private PersonRepository personRepository;
 	
@@ -42,6 +46,7 @@ public class PersonController {
 	@RequestMapping(method=RequestMethod.POST)
 	public HttpEntity<Person> registerPerson(@RequestBody @Validated Person person, BindingResult bindingResult) {
 		if(bindingResult.hasErrors()) {
+			LOGGER.error("Data binding has errors, reject submission. Errors : {}", bindingResult.toString());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		

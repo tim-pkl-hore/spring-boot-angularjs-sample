@@ -7,6 +7,7 @@
 <body ng-app="tutorialApp">
 	<!-- Start: Show list of person -->
 	<div ng-controller="listCtrl">
+		<h2>List People</h2>
 		<table border="1">
 			<thead>
 				<tr>
@@ -30,7 +31,33 @@
 	</div>
 	<!-- End: Show list of person -->
 	<!-- Start: Show register person form -->
-	
+	<div ng-controller="registerCtrl">
+		<h2>Register Person</h2>
+		<form ng-submit="submit()">
+			<input type="text" ng-model="person.name" placeholder="Full Name"><br />
+			<select ng-model="person.gender">
+				<option value="MALE">Male</option>
+				<option value="FEMALE">Female</option>
+			</select><br />
+			<input type="text" ng-model="person.dateOfBirth" placeholder="Date of Birth (yyyy-MM-dd)"><br />
+			<input type="text" ng-model="person.email" placeholder="Email Address"><br />
+			<input type="text" ng-model="person.name" placeholder="Phone Number"><br />
+			<input type="submit" value="Register">
+		</form>
+		
+		<h2>Register Person 2</h2>
+		<form ng-submit="submit()">
+			<input type="text" ng-model="person.name" placeholder="Full Name"><br />
+			<select ng-model="person.gender">
+				<option value="MALE">Male</option>
+				<option value="FEMALE">Female</option>
+			</select><br />
+			<input type="text" ng-model="person.dateOfBirth" placeholder="Date of Birth (yyyy-MM-dd)"><br />
+			<input type="text" ng-model="person.email" placeholder="Email Address"><br />
+			<input type="text" ng-model="person.phone" placeholder="Phone Number"><br />
+			<input type="submit" value="Register">
+		</form>
+	</div>
 	<!-- End: Show register person form -->
 	<div ng-controller="listCtrl">
 	<script type="text/javascript" src="/scripts/vendor/angular.min.js"></script>
@@ -41,25 +68,44 @@
 		var app = angular.module('tutorialApp', []);
 		
 		app.controller('listCtrl', function($scope, $http, $log) {
-				$scope.items = [];
+			$scope.items = [];
 
+			var request = {
+				url : '/people',
+				method : 'GET'
+			};
+			var successHandler = function(response) {
+				// Tampilin struktur dari 'response' di console browser.
+				$log.debug("Response data dari server :\n" + angular.toJson(response.data, true));
+				$scope.items = response.data.content;
+			};
+			var errorHandler = function(errors) {
+				// Tampilin struktur dari 'errors' di console browser.
+				$log.error(angular.toJson(errors, true));
+			};
+
+			// Make http request for member list.
+			$http(request).then(successHandler, errorHandler);
+		});
+		
+		app.controller('registerCtrl', function($scope, $http, $log) {
+			$scope.person = {};
+			
+			$scope.submit = function() {
 				var request = {
-					url : '/people',
-					method : 'GET'
+					url: '/people',
+					method: 'POST',
+					data: $scope.person
 				};
 				var successHandler = function(response) {
-					// Tampilin struktur dari 'response' di console browser.
-					$log.debug(angular.toJson(response, true));
-					$scope.items = response.data.content;
+					$log.debug('Response data dari server :\n' + angular.toJson(response.data, true));
 				};
 				var errorHandler = function(errors) {
-					// Tampilin struktur dari 'errors' di console browser.
-					$log.error(angular.toJson(errors, true));
+					$log.error('Errors :\n' + angular.toJson(errors, true));
 				};
-
-				// Make http request for member list.
-				$http(request).then(successHandler, errorHandler);
-			});
+				$http(request).then();
+			};
+		});
 	</script>
 </body>
 </html>

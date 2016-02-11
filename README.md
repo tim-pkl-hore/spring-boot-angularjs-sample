@@ -294,3 +294,79 @@ app.controller('listCtrl', listControllerFunction);
 Perlu dicatat, ```$scope```, ```$http``` dan ```$log``` adalah service bawaan angular. Dalam contoh ini, parameter ```$scope```, ```$http``` dan ```$log``` dari fungsi controller akan auto-inject atau autowired berdasarkan namanya, jadi nulis nama service itu tidak boleh salah.
 
 ### Register Person
+
+Tambah snippet berikut ini ke dalam element ```<body>``` file ```index.html```.
+```html
+	<!-- Start: Show register person form -->
+	<div ng-controller="registerCtrl">
+		<h2>Register Person</h2>
+		<form ng-submit="submit()">
+			<input type="text" ng-model="person.name" placeholder="Full Name"><br />
+			<select ng-model="person.gender">
+				<option value="MALE">Male</option>
+				<option value="FEMALE">Female</option>
+			</select><br />
+			<input type="text" ng-model="person.dateOfBirth" placeholder="Date of Birth (yyyy-MM-dd)"><br />
+			<input type="text" ng-model="person.email" placeholder="Email Address"><br />
+			<input type="text" ng-model="person.phone" placeholder="Phone Number"><br />
+			<input type="submit" value="Register">
+		</form>
+	</div>
+	<!-- End: Show register person form -->
+```
+
+Dalam snippet form di atas, ada beberapa directive baru, ```ng-submit``` pada element ```<form>``` maksudnya pada saat form tersebut disubmit maka akan di-handle oleh fungsi $scope yg diberikan, dalam contoh ini fungsi bernama ```submit()```. Kemudian directive ```ng-model``` di element ```<input>``` dan ```<select>``` maksudnya binding dua arah isi dari element ke object dalam scope dengan nama ```person```, jadi pada saat input diubah, nilai dari object scope ```person``` juga berubah, begitu juga sebaliknya. Untuk membuktikannya, copy-paste element ```<form>``` dari snippet di atas dua kali dalam satu controller yang sama pada file ```index.html``` lalu udah satu form, perhatikan form yang lainnya seperti contoh berikut ini
+
+```html
+	<!-- Start: Show register person form -->
+	<div ng-controller="registerCtrl">
+		<h2>Register Person</h2>
+		<form ng-submit="submit()">
+			<input type="text" ng-model="person.name" placeholder="Full Name"><br />
+			<select ng-model="person.gender">
+				<option value="MALE">Male</option>
+				<option value="FEMALE">Female</option>
+			</select><br />
+			<input type="text" ng-model="person.dateOfBirth" placeholder="Date of Birth (yyyy-MM-dd)"><br />
+			<input type="text" ng-model="person.email" placeholder="Email Address"><br />
+			<input type="text" ng-model="person.phone" placeholder="Phone Number"><br />
+			<input type="submit" value="Register">
+		</form>
+		
+		<h2>Register Person 2</h2>
+		<form ng-submit="submit()">
+			<input type="text" ng-model="person.name" placeholder="Full Name"><br />
+			<select ng-model="person.gender">
+				<option value="MALE">Male</option>
+				<option value="FEMALE">Female</option>
+			</select><br />
+			<input type="text" ng-model="person.dateOfBirth" placeholder="Date of Birth (yyyy-MM-dd)"><br />
+			<input type="text" ng-model="person.email" placeholder="Email Address"><br />
+			<input type="text" ng-model="person.phone" placeholder="Phone Number"><br />
+			<input type="submit" value="Register">
+		</form>
+	</div>
+	<!-- End: Show register person form -->
+```
+
+Selanjutnya, buat controller baru ```registerCtrl``` dalam module ```tutorialApp```
+```js
+		app.controller('registerCtrl', function($scope, $http, $log) {
+			$scope.person = {};
+			
+			$scope.submit = function() {
+				var request = {
+					url: '/people',
+					method: 'POST',
+					data: $scope.person
+				};
+				var successHandler = function(response) {
+					$log.debug('Response data dari server :\n' + angular.toJson(response.data, true));
+				};
+				var errorHandler = function(errors) {
+					$log.error('Errors :\n' + angular.toJson(errors, true));
+				};
+				$http(request).then();
+			};
+		});
+```
